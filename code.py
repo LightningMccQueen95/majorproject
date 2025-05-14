@@ -45,64 +45,6 @@ if uploaded_file is not None:
         ax1.axis('equal')
         st.pyplot(fig1)
 
-# Feature selection and preprocessing
-st.subheader("🧮 Model Training")
-
-if 'Result' in data.columns:
-    target_column = 'Result'
-    y = data[target_column]
-    X = data.drop(columns=[target_column, 'Name']) # Drop 'name' as it's unlikely to be a direct predictor
-
- # Encode target variable ("pass" and "fail" to 1 and 0)
-label_encoder_y = LabelEncoder()
-y = label_encoder_y.fit_transform(y)
-target_classes = label_encoder_y.classes_ # Will be ['fail', 'pass']
-
-# Identify categorical and numerical features
-categorical_cols = X.select_dtypes(include=['object', 'category']).columns
-numerical_cols = X.select_dtypes(include=np.number).columns
-
-# Encode categorical features using one-hot encoding
-X = pd.get_dummies(X, columns=categorical_cols, drop_first=True)
-
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-model = LogisticRegression(max_iter=200)
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
-
-st.success("✅ Model Trained!")
-
-# Evaluation
-st.subheader("📈 Evaluation Metrics")
-st.text("Confusion Matrix:")
-st.write(confusion_matrix(y_test, y_pred))
-st.text("Classification Report:")
-st.text(classification_report(y_test, y_pred, zero_division=0, target_names=target_classes)) # Use original labels
-st.text(f"Accuracy Score: {accuracy_score(y_test, y_pred):.2f}")
-
-# Live prediction
-            st.subheader("🔮 Predict Student Result")
-            input_data = {}
-            for col in X_train.columns:
-                if X_train[col].dtype == 'object': # For categorical features
-                    unique_values = X_train[col].unique()
-                    input_data[col] = st.selectbox(f"Select value for {col}", unique_values)
-                else: # For numerical features
-                    input_data[col] = st.number_input(f"Enter value for {col}", value=float(X_train[col].mean()) if not X_train.empty else 0.0)
-
-            if st.button("Predict"):
-                input_df = pd.DataFrame([input_data])
-
-                # Ensure the input DataFrame has the same columns and order as the training data
-                input_df = input_df[X_train.columns]
-
-                prediction = model.predict(input_df)[0]
-                predicted_label = target_classes[prediction]
-                st.success(f"Predicted Result: **{predicted_label}**")
-
-"""
     # Feature selection
     st.subheader("🧮 Model Training")
 
@@ -151,4 +93,3 @@ st.text(f"Accuracy Score: {accuracy_score(y_test, y_pred):.2f}")
         st.error("Dataset must contain a column named 'Result'. Please check your file.") 
 else:
     st.info("Upload a CSV file to start.")
-"""
