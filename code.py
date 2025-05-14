@@ -208,9 +208,9 @@ if uploaded_file is not None:
             prediction = model.predict(input_df)[0]
             label = "Pass" if prediction == 1 else "Fail"
             st.success(f"Predicted Result: **{label}**")
-"""
+
     else:
         st.error("Dataset must contain a column named 'Result'. Please check your file.")
 else:
     st.info("Upload a CSV file to start.")
-
+"""
