@@ -13,7 +13,7 @@ st.title("🎓 Student Performance Prediction System")
 st.markdown("A Data Science project using **Python, Pandas, ML & Streamlit**.")
 
 # File uploader
-uploaded_file = st.file_uploader("student_performance_data_large.csv", type="csv")
+uploaded_file = st.file_uploader("Upload Student Dataset (CSV)", type="csv")
 
 if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
