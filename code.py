@@ -51,15 +51,12 @@ if uploaded_file is not None:
             if 'Result' in data.columns:
                 target_column = 'Result'
                 y = data[target_column]
-                X = data.drop(columns=[target_column])
+                X = data.drop(columns=[target_column, 'Name']) # Drop 'name' as it's unlikely to be a direct predictor
 
-                # Encode target if not numeric
-                if y.dtype == 'object':
-                    y_encoder = LabelEncoder()
-                    y = y_encoder.fit_transform(y)
-                    target_classes = y_encoder.classes_ # Store original class labels
-                else:
-                    target_classes = sorted(data['Result'].unique()) # If already numeric, get unique values for mapping
+                # Encode target variable ("pass" and "fail" to 1 and 0)
+                label_encoder_y = LabelEncoder()
+                y = label_encoder_y.fit_transform(y)
+                target_classes = label_encoder_y.classes_ # Will be ['fail', 'pass']
 
                 # Identify categorical and numerical features
                 categorical_cols = X.select_dtypes(include=['object', 'category']).columns
@@ -105,11 +102,11 @@ if uploaded_file is not None:
                         input_df = input_df[X_train.columns]
 
                     prediction = model.predict(input_df)[0]
-                    predicted_label = target_classes[prediction] # Map back to original label
+                    predicted_label = target_classes[prediction] # Map back to "fail" or "pass"
                     st.success(f"Predicted Result: **{predicted_label}**")
 
             else:
-                st.error("Dataset must contain a column named 'Result'. Please check your file.")
+                st.error("Dataset must contain a column named 'RESULT'. Please check your file.")
 
 """
     # Feature selection
