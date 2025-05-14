@@ -44,7 +44,7 @@ if uploaded_file is not None:
         ax1.pie(result_counts, labels=result_counts.index, autopct='%1.1f%%', startangle=90)
         ax1.axis('equal')
         st.pyplot(fig1)
-
+"""
     # Feature selection
     st.subheader("🧮 Model Training")
 
@@ -93,3 +93,59 @@ if uploaded_file is not None:
         st.error("Dataset must contain a column named 'Result'. Please check your file.")
 else:
     st.info("Upload a CSV file to start.")
+"""
+# Feature selection and model training
+st.subheader("🧮 Model Training")
+
+if 'Result' in data.columns:
+    target_column = 'Result'
+    X = data.drop(columns=[target_column])
+    y = data[target_column]
+
+    # Encode target if not numeric
+    if y.dtype == 'object':
+        y = pd.factorize(y)[0]
+
+    # Remove non-numeric columns from features
+    X = X.select_dtypes(include=[np.number])
+
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Debug: check target distribution
+    st.write("✅ Training target distribution:", pd.Series(y_train).value_counts())
+
+    # Debug: check feature stats
+    st.write("📏 Feature means:", X.mean())
+    st.write("📐 Feature std devs:", X.std())
+
+    # Try Random Forest for better performance
+    from sklearn.ensemble import RandomForestClassifier
+    model = RandomForestClassifier(random_state=42)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    st.success("✅ Model Trained with Random Forest!")
+
+    # Evaluation
+    st.subheader("📈 Evaluation Metrics")
+    st.text("Confusion Matrix:")
+    st.write(confusion_matrix(y_test, y_pred))
+    st.text("Classification Report:")
+    st.text(classification_report(y_test, y_pred, zero_division=0))
+    st.text(f"Accuracy Score: {accuracy_score(y_test, y_pred):.2f}")
+
+    # Live prediction
+    st.subheader("🔮 Predict Student Result")
+    input_data = {}
+    for col in X.columns:
+        input_data[col] = st.number_input(f"Enter value for {col}", value=float(X[col].mean()))
+
+    if st.button("Predict"):
+        input_df = pd.DataFrame([input_data])
+        prediction = model.predict(input_df)[0]
+        label = "Pass" if prediction == 1 else "Fail"
+        st.success(f"Predicted Result: **{label}**")
+
+else:
+    st.error("Dataset must contain a column named 'Result'. Please check your file.")
