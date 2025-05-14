@@ -83,30 +83,24 @@ st.text(classification_report(y_test, y_pred, zero_division=0, target_names=targ
 st.text(f"Accuracy Score: {accuracy_score(y_test, y_pred):.2f}")
 
 # Live prediction
-st.subheader("🔮 Predict Student Result")
-input_data = {}
-for col in X_train.columns: # Use columns from the training set
-    input_data[col] = st.number_input(f"Enter value for {col}", value=0.0)
+            st.subheader("🔮 Predict Student Result")
+            input_data = {}
+            for col in X_train.columns:
+                if X_train[col].dtype == 'object': # For categorical features
+                    unique_values = X_train[col].unique()
+                    input_data[col] = st.selectbox(f"Select value for {col}", unique_values)
+                else: # For numerical features
+                    input_data[col] = st.number_input(f"Enter value for {col}", value=float(X_train[col].mean()) if not X_train.empty else 0.0)
 
-    if st.button("Predict"):
-        input_df = pd.DataFrame([input_data])
+            if st.button("Predict"):
+                input_df = pd.DataFrame([input_data])
 
-# Ensure the input DataFrame has the same columns as the training data
-missing_cols = set(X_train.columns) - set(input_df.columns)
-for c in missing_cols:
-    input_df[c] = 0
+                # Ensure the input DataFrame has the same columns and order as the training data
+                input_df = input_df[X_train.columns]
 
-    extra_cols = set(input_df.columns) - set(X_train.columns)
-    if extra_cols:
-        st.warning(f"Warning: Extra columns in input data: {extra_cols}. These will be ignored.")
-        input_df = input_df[X_train.columns]
-
-        prediction = model.predict(input_df)[0]
-        predicted_label = target_classes[prediction] # Map back to "fail" or "pass"
-        st.success(f"Predicted Result: **{predicted_label}**")
-
-    else:
-        st.error("Dataset must contain a column named 'Result'. Please check your file.")
+                prediction = model.predict(input_df)[0]
+                predicted_label = target_classes[prediction]
+                st.success(f"Predicted Result: **{predicted_label}**")
 
 """
     # Feature selection
