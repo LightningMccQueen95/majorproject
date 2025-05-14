@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 import plotly.express as px
 
 # --- Custom CSS: white background for printing ---
+# --- Custom CSS: white background for printing ---
 st.markdown(
     """
     <style>
@@ -23,6 +24,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 # --- App Title ---
 st.title("🎓 Student Performance Prediction System")
