@@ -47,7 +47,7 @@ if uploaded_file is not None:
         st.write("Class Distribution:", result_counts)
         if len(result_counts) != 2:
             st.error("Target 'Result' must be binary (e.g., Pass/Fail).")
-        else:
+        else:  # This is likely line 212
             fig1, ax1 = plt.subplots()
             ax1.pie(result_counts, labels=result_counts.index, autopct='%1.1f%%', startangle=90)
             ax1.axis('equal')
