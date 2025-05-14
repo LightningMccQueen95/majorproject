@@ -86,7 +86,7 @@ if uploaded_file is not None:
         if st.button("Predict"):
             input_df = pd.DataFrame([input_data])
             prediction = model.predict(input_df)[0]
-            label = "Pass" if prediction == 1 else "Fail"
+            label = "Fail" if prediction == 1 else "Pass"
             st.success(f"Predicted Result: **{label}**")
 
     else:
