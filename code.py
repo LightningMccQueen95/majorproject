@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE  # For handling imbalance
+from imblearn.over_sampling import SMOTE
 
 # Title
 st.title("🎓 Student Performance Prediction System")
@@ -71,8 +71,8 @@ if uploaded_file is not None:
                     st.stop()
 
             # Encode categorical features
-            X = pd.get_dummies(X, drop_first=True)  # One-hot encode categorical columns
-            X = X.select_dtypes(include=[np.number])  # Keep only numeric columns
+            X = pd.get_dummies(X, drop_first=True)
+            X = X.select_dtypes(include=[np.number])
 
             # Feature scaling
             scaler = StandardScaler()
@@ -110,11 +110,10 @@ if uploaded_file is not None:
 
             if st.button("Predict"):
                 input_df = pd.DataFrame([input_data])
-                input_scaled = scaler.transform(input_df)  # Scale input
+                input_scaled = scaler.transform(input_df)
                 prediction = model.predict(input_scaled)[0]
                 label = "Pass" if prediction == 1 else "Fail"
                 st.success(f"Predicted Result: **{label}**")
-
 else:
     st.info("Upload a CSV file to start.")
 
