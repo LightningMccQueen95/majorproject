@@ -45,12 +45,13 @@ if uploaded_file is not None:
         ax1.axis('equal')
         st.pyplot(fig1)
 
+# Feature selection and preprocessing
 st.subheader("🧮 Model Training")
 
-if 'RESULT' in data.columns:
-    target_column = 'RESULT'
+if 'Result' in data.columns:
+    target_column = 'Result'
     y = data[target_column]
-    X = data.drop(columns=[target_column, 'name']) # Drop 'name' as it's unlikely to be a direct predictor
+    X = data.drop(columns=[target_column, 'Name']) # Drop 'name' as it's unlikely to be a direct predictor
 
  # Encode target variable ("pass" and "fail" to 1 and 0)
 label_encoder_y = LabelEncoder()
@@ -105,7 +106,7 @@ for c in missing_cols:
         st.success(f"Predicted Result: **{predicted_label}**")
 
     else:
-        st.error("Dataset must contain a column named 'RESULT'. Please check your file.")
+        st.error("Dataset must contain a column named 'Result'. Please check your file.")
 
 """
     # Feature selection
