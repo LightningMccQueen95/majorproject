@@ -153,7 +153,7 @@ for c in missing_cols:
             st.success(f"Predicted Result: **{label}**")
 
     else:
-        st.error("Dataset must contain a column named 'Result'. Please check your file.") """
+        st.error("Dataset must contain a column named 'Result'. Please check your file.") 
 else:
     st.info("Upload a CSV file to start.")
-
+"""
